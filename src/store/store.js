@@ -1,6 +1,7 @@
 'use strict'
 import axios from 'axios'
-import {ACTION_FETCH_USER_INFO, ACTION_FETCH_TEMPLATE_INFO, ACTION_CHANGE_MENU_STATUS, MUTATION_RENDER_USER_INFO, MUTATION_RENDER_TEMPLATE_INFO, MUTATION_CHANGE_MENU_STATUS} from '@/mod/action'
+import _ from 'lodash'
+import {ACTION_FETCH_USER_INFO, ACTION_FETCH_TEMPLATE_INFO, ACTION_CHANGE_MENU_STATUS, ACTION_ADD_TEMPLATE_INFO, ACTION_DELETE_TEMPLATE_INFO, MUTATION_RENDER_USER_INFO, MUTATION_RENDER_TEMPLATE_INFO, MUTATION_CHANGE_MENU_STATUS, MUTATION_ADD_TEMPLATE_INFO, MUTATION_DELETE_TEMPLATE_INFO} from '@/mod/action'
 import {FETCH_TAMPLATE_INFO_URL} from '@/mod/constants'
 let mutations = {
   [MUTATION_RENDER_USER_INFO] (state, payload) {
@@ -11,6 +12,44 @@ let mutations = {
   },
   [MUTATION_CHANGE_MENU_STATUS] (state, payload) {
     state.menuDisabled = payload.menuDisabled
+  },
+  [MUTATION_ADD_TEMPLATE_INFO] (state, payload) {
+    switch (payload.type) {
+      case 'port':
+        for (let i = 0; i < payload.templateNumber; i++) {
+          const templateItem = _.cloneDeep(state.templateInfo[payload.templateIndex])
+          state.templateInfo.push(templateItem)
+        }
+        break
+      case 'flow':
+        const newTemplateItem = _.clone(state.templateInfo[payload.templateIndex])
+        newTemplateItem.wrapList.forEach(item => {
+          if (item.key === payload.key) {
+            for (let i = 0; i < payload.templateNumber; i++) {
+              const newItem = _.cloneDeep(item.value[payload.index])
+              item.value.push(newItem)
+            }
+          }
+        })
+        state.templateInfo[payload.templateIndex] = newTemplateItem
+        break
+    }
+  },
+  [MUTATION_DELETE_TEMPLATE_INFO] (state, payload) {
+    switch (payload.type) {
+      case 'port':
+        state.templateInfo.splice(payload.templateIndex, 1)
+        break
+      case 'flow':
+        const wrapList = state.templateInfo[payload.templateIndex].wrapList.slice(0)
+        wrapList.forEach(item => {
+          if (item.key === payload.key) {
+            item.value.splice(payload.index, 1)
+          }
+        })
+        state.templateInfo[payload.templateIndex].wrapList = wrapList
+        break
+    }
   }
 }
 
@@ -27,12 +66,18 @@ let actions = {
     context.commit(MUTATION_CHANGE_MENU_STATUS, {
       menuDisabled: payload.menuDisabled
     })
+  },
+  [ACTION_ADD_TEMPLATE_INFO] (context, payload) {
+    context.commit(MUTATION_ADD_TEMPLATE_INFO, payload)
+  },
+  [ACTION_DELETE_TEMPLATE_INFO] (context, payload) {
+    context.commit(MUTATION_DELETE_TEMPLATE_INFO, payload)
   }
 }
 
 function fetchTemplateInfo ({commit}, {userInfo, templateId}) {
   commit(MUTATION_RENDER_TEMPLATE_INFO, {
-    templateInfo: [
+    /* templateInfo: [
       {
         port: 1,
         portNum: 33,
@@ -278,12 +323,23 @@ function fetchTemplateInfo ({commit}, {userInfo, templateId}) {
           }
         ]
       }
-    ]
+    ] */
 
-    /* templateInfo: [{
+    templateInfo: [{
       port: 1,
       portNum: 33,
-      status: 1,
+      status: '0',
+      models: ['1', '2'],
+      modelList: [{
+        key: '1',
+        value: 'A'
+      }, {
+        key: '2',
+        value: 'B'
+      }, {
+        key: '3',
+        value: 'C'
+      }],
       formList: [{
         title: '线速率',
         type: 'select',
@@ -297,21 +353,6 @@ function fetchTemplateInfo ({commit}, {userInfo, templateId}) {
         }, {
           key: '3G',
           value: '3G'
-        }, {
-          key: '4G',
-          value: '4G'
-        }, {
-          key: '6G',
-          value: '6G'
-        }, {
-          key: '10G',
-          value: '10G'
-        }, {
-          key: '12G',
-          value: '12G'
-        }, {
-          key: '24G',
-          value: '24G'
         }]
       }, {
         title: '输入框',
@@ -334,34 +375,94 @@ function fetchTemplateInfo ({commit}, {userInfo, templateId}) {
           key: '1234',
           value: '测试2'
         }]
-      }]
-    }, {
-      port: 2,
-      portNum: 33,
-      status: 1,
-      formList: [{
-        title: '输入框',
-        type: 'input',
-        value: 'sunjiwei',
-        listValue: []
-      }, {
-        title: '数字',
-        type: 'number',
-        value: 5,
-        listValue: []
-      }, {
-        title: '下拉框',
-        type: 'select',
-        value: [],
-        listValue: [{
-          key: '123',
-          value: '测试'
+      }],
+      wrapList: [{
+        key: '1',
+        title: 'A',
+        formList: [{
+          title: '线速率',
+          type: 'select',
+          value: [''],
+          listValue: [{
+            key: '1G',
+            value: '1G'
+          }, {
+            key: '2G',
+            value: '2G'
+          }, {
+            key: '3G',
+            value: '3G'
+          }]
         }, {
-          key: '1234',
-          value: '测试2'
-        }]
+          title: '输入框',
+          type: 'input',
+          value: 'sunjiwei',
+          listValue: []
+        }, {
+          title: '数字',
+          type: 'number',
+          value: '5',
+          listValue: []
+        }, {
+          title: '线速率',
+          type: 'select',
+          value: ['123', '1234'],
+          listValue: [{
+            key: '123',
+            value: '测试'
+          }, {
+            key: '1234',
+            value: '测试2'
+          }]
+        }],
+        value: [[{
+          title: '线速率',
+          type: 'select',
+          value: [''],
+          listValue: [{
+            key: '1G',
+            value: '1G'
+          }, {
+            key: '2G',
+            value: '2G'
+          }, {
+            key: '3G',
+            value: '3G'
+          }]
+        }, {
+          title: '输入框',
+          type: 'input',
+          value: 'sunjiwei',
+          listValue: []
+        }, {
+          title: '数字',
+          type: 'number',
+          value: '5',
+          listValue: []
+        }, {
+          title: '数字',
+          type: 'number',
+          value: '5',
+          listValue: []
+        }, {
+          title: '数字',
+          type: 'number',
+          value: '5',
+          listValue: []
+        }, {
+          title: '线速率',
+          type: 'select',
+          value: ['123', '1234'],
+          listValue: [{
+            key: '123',
+            value: '测试'
+          }, {
+            key: '1234',
+            value: '测试2'
+          }]
+        }]]
       }]
-    }] */
+    }]
   })
   return axios.get(FETCH_TAMPLATE_INFO_URL, {
     params: {
