@@ -22,8 +22,7 @@ let mutations = {
         }
         break
       case 'flow':
-        const newTemplateItem = _.clone(state.templateInfo[payload.templateIndex])
-        newTemplateItem.wrapList.forEach(item => {
+        state.templateInfo[payload.templateIndex].wrapList.forEach(item => {
           if (item.key === payload.key) {
             for (let i = 0; i < payload.templateNumber; i++) {
               const newItem = _.cloneDeep(item.value[payload.index])
@@ -31,7 +30,6 @@ let mutations = {
             }
           }
         })
-        state.templateInfo[payload.templateIndex] = newTemplateItem
         break
     }
   },
@@ -433,16 +431,6 @@ function fetchTemplateInfo ({commit}, {userInfo, templateId}) {
           title: '输入框',
           type: 'input',
           value: 'sunjiwei',
-          listValue: []
-        }, {
-          title: '数字',
-          type: 'number',
-          value: '5',
-          listValue: []
-        }, {
-          title: '数字',
-          type: 'number',
-          value: '5',
           listValue: []
         }, {
           title: '数字',
