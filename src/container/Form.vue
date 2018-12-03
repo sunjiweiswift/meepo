@@ -110,7 +110,7 @@ export default {
     ...mapState(['templateInfo', 'userInfo'])
   },
   methods: {
-    addWrap(type, templateIndex, index, key) {
+    addWrap (type, templateIndex, index, key) {
       this.$store.dispatch(ACTION_ADD_TEMPLATE_INFO, {
         type,
         templateIndex,
@@ -118,9 +118,9 @@ export default {
         key: key || '',
         templateNumber: this.templateNumber
       })
-      this.templateNumber = 1;
+      this.templateNumber = 1
     },
-    deleteWrap(type, templateIndex, index, key) {
+    deleteWrap (type, templateIndex, index, key) {
       this.$store.dispatch(ACTION_DELETE_TEMPLATE_INFO, {
         type,
         templateIndex,
@@ -128,7 +128,7 @@ export default {
         key
       })
     },
-    onSubmit() {
+    onSubmit () {
       this.axios.get(SUBMIT_TAMPLATE_INFO_URL, {
         params: {
           // templateInfo: JSON.stringify(this.templateInfo)
