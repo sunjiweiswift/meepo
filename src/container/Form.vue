@@ -107,7 +107,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['templateInfo', 'userInfo'])
+    ...mapState(['templateInfo', 'userInfo', 'templateId'])
   },
   methods: {
     addWrap (type, templateIndex, index, key) {
@@ -133,7 +133,8 @@ export default {
         params: {
           // templateInfo: JSON.stringify(this.templateInfo)
           templateInfo: this.templateInfo,
-          userInfo: this.userInfo
+          userInfo: this.userInfo,
+          templateId: this.templateId
         }
       }).then(function (response) {
         console.log(response)

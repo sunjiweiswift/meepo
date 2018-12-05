@@ -26,7 +26,7 @@
 
 <script>
 import {mapState} from 'vuex'
-import {ACTION_FETCH_TEMPLATE_INFO} from '@/mod/action'
+import {ACTION_FETCH_TEMPLATE_INFO, ACTION_RENDER_MENU_ID} from '@/mod/action'
 export default {
   data () {
     return {
@@ -109,6 +109,9 @@ export default {
     jumpToLink (id) {
       this.$store.dispatch(ACTION_FETCH_TEMPLATE_INFO, {
         userInfo: this.userInfo,
+        templateId: id
+      })
+      this.$store.dispatch(ACTION_RENDER_MENU_ID, {
         templateId: id
       })
       this.$router.push({

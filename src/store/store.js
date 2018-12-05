@@ -1,7 +1,7 @@
 'use strict'
 import axios from 'axios'
 import _ from 'lodash'
-import {ACTION_FETCH_USER_INFO, ACTION_FETCH_TEMPLATE_INFO, ACTION_CHANGE_MENU_STATUS, ACTION_ADD_TEMPLATE_INFO, ACTION_DELETE_TEMPLATE_INFO, MUTATION_RENDER_USER_INFO, MUTATION_RENDER_TEMPLATE_INFO, MUTATION_CHANGE_MENU_STATUS, MUTATION_ADD_TEMPLATE_INFO, MUTATION_DELETE_TEMPLATE_INFO} from '@/mod/action'
+import {ACTION_FETCH_USER_INFO, ACTION_FETCH_TEMPLATE_INFO, ACTION_CHANGE_MENU_STATUS, ACTION_ADD_TEMPLATE_INFO, ACTION_DELETE_TEMPLATE_INFO, ACTION_RENDER_MENU_ID, MUTATION_RENDER_USER_INFO, MUTATION_RENDER_TEMPLATE_INFO, MUTATION_CHANGE_MENU_STATUS, MUTATION_ADD_TEMPLATE_INFO, MUTATION_DELETE_TEMPLATE_INFO, MUTATION_RENDER_MENU_ID} from '@/mod/action'
 import {FETCH_TAMPLATE_INFO_URL} from '@/mod/constants'
 let mutations = {
   [MUTATION_RENDER_USER_INFO] (state, payload) {
@@ -48,6 +48,9 @@ let mutations = {
         state.templateInfo[payload.templateIndex].wrapList = wrapList
         break
     }
+  },
+  [MUTATION_RENDER_MENU_ID] (state, payload) {
+    state.templateId = payload.templateId
   }
 }
 
@@ -70,6 +73,9 @@ let actions = {
   },
   [ACTION_DELETE_TEMPLATE_INFO] (context, payload) {
     context.commit(MUTATION_DELETE_TEMPLATE_INFO, payload)
+  },
+  [ACTION_RENDER_MENU_ID] (context, payload) {
+    context.commit(MUTATION_RENDER_MENU_ID, payload)
   }
 }
 

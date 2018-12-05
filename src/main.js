@@ -19,7 +19,7 @@ Vue.use(ElementUI)
 Vue.prototype.axios = axios
 Vue.prototype.qs = Qs
 Vue.config.productionTip = false
-const storeObj = generateStore({userInfo: {}, templateInfo: [], menuDisabled: true})
+const storeObj = generateStore({userInfo: {}, templateInfo: [], menuDisabled: true, templateId: ''})
 const store = new Vuex.Store(storeObj)
 
 /* eslint-disable no-new */
