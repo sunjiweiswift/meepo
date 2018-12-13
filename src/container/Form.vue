@@ -4,7 +4,7 @@
       <div v-for="(templateItem,templateIndex) in templateInfo" :key="templateIndex">
         <div class="form-item">
           <div class="form-item-operate">
-          <el-form-item label="端口号">
+          <el-form-item :label= "templateItem.portName">
             <el-select v-model="templateItem.port" placeholder="请选择">
               <el-option
                 v-for="item in templateItem.portNum"
@@ -29,13 +29,21 @@
           </el-form-item>
           <el-form-item label="操作" class="auto-form-item">
             <el-input class="small-input" v-model="templateNumber"></el-input>
-            <el-button type="primary" icon="el-icon-plus" @click="addWrap('port', templateIndex)"></el-button>
-            <el-button type="primary" icon="el-icon-delete" @click="deleteWrap('port', templateIndex)" v-if="templateIndex!=0"></el-button>
+            <el-button type="primary" icon="el-icon-plus" v-on:click="addWrap('port', templateIndex)"></el-button>
+            <el-button type="primary" icon="el-icon-delete" v-on:click="deleteWrap('port', templateIndex)" v-if="templateIndex!=0"></el-button>
           </el-form-item>
           </div>
           <el-form-item v-for="(normalItem,normalIndex) in templateItem.formList" :label="normalItem.title" :key="normalIndex">
             <el-input class="default-input" v-model="normalItem.value" v-if="normalItem.type=='input'"></el-input>
             <el-input-number class="default-number" v-model="normalItem.value" v-if="normalItem.type=='number'"></el-input-number>
+            <el-select class="default-select" v-model="normalItem.value" multiple placeholder="请选择" v-if="normalItem.type=='selectmul'">
+              <el-option
+                v-for="item in normalItem.listValue"
+                :key="item.key"
+                :label="item.value"
+                :value="item.key">
+              </el-option>
+            </el-select>
             <el-select class="default-select" v-model="normalItem.value" placeholder="请选择" v-if="normalItem.type=='select'">
               <el-option
                 v-for="item in normalItem.listValue"
@@ -81,8 +89,8 @@
             </el-form-item>
             <el-form-item label="操作" class="auto-form-item">
                 <el-input class="small-input" v-model="templateNumber"></el-input>
-                <el-button type="primary" icon="el-icon-plus" @click="addWrap('flow', templateIndex, index, wrap.key)"></el-button>
-                <el-button type="primary" icon="el-icon-delete" @click="deleteWrap('flow', templateIndex, index, wrap.key)" v-if="index!=0"></el-button>
+                <el-button type="primary" icon="el-icon-plus" v-on:click="addWrap('flow', templateIndex, index, wrap.key)"></el-button>
+                <el-button type="primary" icon="el-icon-delete" v-on:click="deleteWrap('flow', templateIndex, index, wrap.key)" v-if="index!=0"></el-button>
               </el-form-item>
             </div>
             </div>
@@ -129,12 +137,16 @@ export default {
       })
     },
     onSubmit () {
-      this.axios.get(SUBMIT_TAMPLATE_INFO_URL, {
-        params: {
-          // templateInfo: JSON.stringify(this.templateInfo)
-          templateInfo: this.templateInfo,
-          userInfo: this.userInfo,
-          templateId: this.templateId
+      this.axios.post(SUBMIT_TAMPLATE_INFO_URL, JSON.stringify({
+        // params: {
+        userInfo: this.userInfo,
+        templateId: this.templateId,
+        templateInfo: this.templateInfo
+        // }
+      }), {
+        headers: {
+          // 'Content-Type': 'application/x-www-form-urlencoded'
+          'Content-Type': 'application/json'
         }
       }).then(function (response) {
         console.log(response)
