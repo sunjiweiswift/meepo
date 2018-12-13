@@ -11,6 +11,11 @@
           </el-option>
         </el-select>
       </el-form-item>
+      <el-form-item label="IP地址">
+        <el-input v-model="form.userIp">
+          <template slot="prepend">10.121.177.</template>
+        </el-input>
+      </el-form-item>
       <el-form-item label="操作类型">
         <el-radio-group v-model="form.operate">
           <el-radio label="0">新增模版</el-radio>
@@ -40,14 +45,18 @@ export default {
     return {
       operate: '0',
       userList: [{
-        id: 123,
+        id: 'sunjiwei',
         name: '孙继炜'
       }, {
-        id: 1234,
-        name: '李孟奇'
+        id: 'guoxiaoliang',
+        name: '郭晓亮'
+      }, {
+        id: 'bulei',
+        name: 'bulei'
       }],
       form: {
         userId: '',
+        userIp: '',
         operate: '0',
         caseNumber: '',
         caseNumberNew: ''
