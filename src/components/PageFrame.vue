@@ -35,16 +35,16 @@ export default {
           title: '激励',
           subMenu: [
             {
+              title: 'TOP',
+              id: 'top'
+            },
+            {
               title: 'CPRI激励',
-              id: '1'
+              id: 'cpri_stim'
             },
             {
               title: 'ETH激励',
-              id: '2'
-            },
-            {
-              title: '选项3',
-              id: '3'
+              id: 'eth_srio_stim'
             }
           ]
         },
